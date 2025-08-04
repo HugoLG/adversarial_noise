@@ -75,7 +75,7 @@ Need to start the implementation. <br>
 This is my plan...<br>
 - [X] Predict function. Using pytorch create a predict function that uses resnet50, vgg16, or vgg19 to make image classification predictions.
 - [X] Extract Features function (Encoder). Using the same model from the predict function, create a function that doesn't do prediction but returns vector of extracted features.
-- [ ] Reconstruct Image. Create the function that given a vector of features we reconstruct an image that is similar to a given input image. This is going to be our reconstruction function that will generate the output.
+- [X] Reconstruct Image. Create the function that given a vector of features we reconstruct an image that is similar to a given input image. This is going to be our reconstruction function that will generate the output.
 - [ ] Define list of possible labels for the user to select from. Create a small sample dataset for each label. 
 - [ ] Extract features vectors for each label. Cluster them. Get the centroid and save it as our "typical features vector" for each label.
 - [ ] Modify our reconstruct image function to use the extracted centroids of the labels instead of random noise. 
