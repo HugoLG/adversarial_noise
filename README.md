@@ -1,5 +1,5 @@
 # Machine Learning Problem - Adversarial Noise
-Machine Learning Programming Challenge
+Machine Learning Programming Challenge - Journal
 
 Assumption #1: We have an Image Classification model, it can be any model (e.g. VGG16). 
 
@@ -62,3 +62,28 @@ Initial thoughts
 4. Create a full pipeline and deploy it as an API, to be available for anyone that wants to use it.
     4.1 This should be easy, we can use FastAPI library to quickly create a function that receives the input image and label
     4.2 Do all the processing, create the image and return it.
+
+
+Update #1
+After some research I don't think I need a GAN. We can reconstruct the image using an optimisation loop with gradient descent.
+Look at: 
+1. https://github.com/mndu/guided-feature-inversion
+2. https://github.com/guanhuaw/MIRTorch
+3. https://github.com/KamitaniLab/icnn 
+
+Need to start the implementation. 
+This is my plan...
+[ ] Predict function. Using pytorch create a predict function that uses resnet50, vgg16, or vgg19 to make image classification predictions.
+[ ] Extract Features function (Encoder). Using the same model from the predict function, create a function that doesn't do prediction but returns vector of extracted features.
+[ ] Reconstruct Image. Create the function that given a vector of features we reconstruct an image that is similar to a given input image. This is going to be our reconstruction function that will generate the output.
+[ ] Define list of possible labels for the user to select from. Create a small sample dataset for each label. 
+[ ] Extract features vectors for each label. Cluster them. Get the centroid and save it as our "typical features vector" for each label.
+[ ] Modify our reconstruct image function to use the extracted centroids of the labels instead of random noise. 
+[ ] Test full pipeline:
+    1. Select input image.
+    2. Select desired expected label.
+    3. Encode input image.
+    4. Get "typical features vector" for desired label.
+    5. Add noise to encoded input image.
+    6. Reconstruct modified encoded image.
+    7. Save reconstruct image as output.jpg
