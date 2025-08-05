@@ -42,13 +42,7 @@ def classify_image(img_file, is_img_path=False):
     
     # 6. the outputs have the logits but we also need the string class label
     # we can attempt get the imagenet classes from the following link
-    url = "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"
-    try:
-        with urllib.request.urlopen(url, timeout=5) as resp:
-            classes = [line.strip().decode("utf-8") for line in resp.readlines()]
-    except Exception as e:
-        print("Failed to download label mapping:", e)
-        classes = None
+    classes = get_imagenet_classes()
     
     # process output and return label, confidence, probabilities
     probabilities = torch.nn.functional.softmax(outputs[0], dim=0)
@@ -57,3 +51,15 @@ def classify_image(img_file, is_img_path=False):
     confidence = probabilities[top_i].item()
 
     return {"label":label, "confidence":confidence, "probabilities":probabilities}
+
+
+def get_imagenet_classes():
+    url = "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"
+    try:
+        with urllib.request.urlopen(url, timeout=5) as resp:
+            classes = [line.strip().decode("utf-8") for line in resp.readlines()]
+    except Exception as e:
+        print("Failed to download label mapping:", e)
+        classes = None
+    return classes
+

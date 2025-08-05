@@ -3,6 +3,8 @@ import numpy as np
 from feature_extraction import *
 from torchvision import models, transforms
 from img_classification import *
+import pickle
+import matplotlib.pyplot as plt
 
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD  = [0.229, 0.224, 0.225]
@@ -30,7 +32,12 @@ def generate_adversarial(input_image, desired_label, epsilon=0.03, alpha=0.05, s
 
     # TODO this has to be the centroid of the desired label, random noise for now
     # target_features = torch.randn(512).to(device)
-    target_features = extract_features("lion.jpg").to(device)
+    centroid_path = f"{desired_label}/{desired_label}_centroid.pkl"
+    print(f"centroid path to be open: {centroid_path}")
+    with open(centroid_path, "rb") as f:
+        centroid_np = pickle.load(f)
+    target_features = torch.from_numpy(centroid_np).unsqueeze(0).to(device).float()
+    # target_features = extract_features("lion.jpg").to(device)
 
     for step in range(steps):
         optimiser.zero_grad()
@@ -45,14 +52,14 @@ def generate_adversarial(input_image, desired_label, epsilon=0.03, alpha=0.05, s
         loss = loss_embed_desired_label + (lambda_perceptual*loss_perceptual_image)
         loss.backward()
         optimiser.step()
-        
+
         with torch.no_grad():
             perturbation = torch.clamp(advers_image - input_image, -epsilon, epsilon)
             advers_image.data = torch.clamp(input_image + perturbation, 0, 1)
-        
+
         if step % 10 == 0:
             print(f"Step {step}, Loss: {loss.item():.4f}")
-    
+
     x_unnorm = unnormalize_tensor(advers_image.squeeze(0).cpu())
     pil = tensor_to_pil(x_unnorm) 
     advers_image = _tensor_to_image(advers_image)
@@ -83,12 +90,12 @@ def _tensor_to_image(t):
     img = np.transpose(img, (1, 2, 0))
     img = (img * 255).astype(np.uint8)
     return img
-        
+
 # Load and Prepare Image
 def load_image(path, device):
+        # transforms.CenterCrop(224),
     preprocessing = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(224),
+        transforms.Resize((224,224)),
         transforms.ToTensor(),
         transforms.Normalize(
             mean=[0.485, 0.456, 0.406],
@@ -101,9 +108,11 @@ def load_image(path, device):
 
 dog_res = classify_image("dog.jpg")
 lion_res = classify_image("lion.jpg")
-advers_img = generate_adversarial("dog.jpg", None)
+advers_img = generate_adversarial("dog.jpg", "dining table")
 # advers_res = classify_image(Image.fromarray(advers_img), True)
 advers_res = classify_image(advers_img, True)
+# plt.imshow(advers_img)
+# plt.show()
 # print(classify_image(Image.fromarray(advers_img), True))
 print("dog", "label:", dog_res["label"], "confidence:", dog_res["confidence"])
 print("lion", "label:", lion_res["label"], "confidence:", lion_res["confidence"])

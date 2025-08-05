@@ -25,15 +25,15 @@ def extract_features(img_file, is_img_path=False, preprocess=True):
     # encoder.to(device)
     encoder = torch.nn.Sequential(
         model.features,
-        torch.nn.AdaptiveAvgPool2d((1, 1)),
-        torch.nn.Flatten(start_dim=1, end_dim=2)   # yields [1,512]
+        torch.nn.AdaptiveAvgPool2d((7, 7)),
+        torch.nn.Flatten()   # yields [1,512]
     ).to(device).eval()
     
     # 3. Create Image preprocessing pipeline for image use pytorch transforms
     # Use 224x224 for VGG16
+    # TODO consider moving this to a function, it is used in multiple places of the code
     preprocessing = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(224),
+        transforms.Resize((224,224)),
         transforms.ToTensor(),
         transforms.Normalize(
             mean=[0.485, 0.456, 0.406],
