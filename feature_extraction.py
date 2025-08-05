@@ -10,7 +10,7 @@ from PIL import Image
         @img_file can be img object or string img file path
         @is_img_path boolean to define if img_file is object or file path
 """
-def extract_features(img_file, is_img_path=False):
+def extract_features(img_file, is_img_path=False, preprocess=True):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     
     # 1. Load image to img variable
@@ -21,9 +21,14 @@ def extract_features(img_file, is_img_path=False):
 
     # 2. Define model and get only the encoding part, not the classifier head
     model = models.vgg16(pretrained=True)
-    encoder = model.features[:23].eval()
-    encoder.to(device)
-
+    # encoder = model.features[:23].eval()
+    # encoder.to(device)
+    encoder = torch.nn.Sequential(
+        model.features,
+        torch.nn.AdaptiveAvgPool2d((1, 1)),
+        torch.nn.Flatten(start_dim=1, end_dim=2)   # yields [1,512]
+    ).to(device).eval()
+    
     # 3. Create Image preprocessing pipeline for image use pytorch transforms
     # Use 224x224 for VGG16
     preprocessing = transforms.Compose([
