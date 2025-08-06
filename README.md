@@ -77,9 +77,9 @@ This is my plan...<br>
 - [X] Extract Features function (Encoder). Using the same model from the predict function, create a function that doesn't do prediction but returns vector of extracted features.
 - [X] Reconstruct Image. Create the function that given a vector of features we reconstruct an image that is similar to a given input image. This is going to be our reconstruction function that will generate the output.
 - [X] Define list of possible labels for the user to select from. Create a small sample dataset for each label. 
-- [ ] Extract features vectors for each label. Cluster them. Get the centroid and save it as our "typical features vector" for each label.
-- [ ] Modify our reconstruct image function to use the extracted centroids of the labels instead of random noise. 
-- [ ] Test full pipeline:
+- [X] Extract features vectors for each label. Cluster them. Get the centroid and save it as our "typical features vector" for each label.
+- [X] Modify our reconstruct image function to use the extracted centroids of the labels instead of random noise. 
+- [X] Test full pipeline:
     1. Select input image.
     2. Select desired expected label.
     3. Encode input image.
@@ -87,3 +87,11 @@ This is my plan...<br>
     5. Add noise to encoded input image.
     6. Reconstruct modified encoded image.
     7. Save reconstruct image as output.jpg
+
+Update #2
+Previous plan completed. 
+Code still needs to be clean, but overall idea is working: input image + desired label ==> generate_adversarial ==> reconstructed adversarial image + classification of new reconstructed adversarial image == desired label
+Try to improve optimiser... maybe change loss function? 
+    - Also found lpips: https://github.com/richzhang/PerceptualSimilarity
+    - Maybe it might be interesting to include that in loss function ?
+

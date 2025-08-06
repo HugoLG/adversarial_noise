@@ -22,8 +22,7 @@ def classify_image(img_file, is_img_path=False):
     # 3. Create Image preprocessing pipeline for image use pytorch transforms
     # Use 224x224 for VGG16
     preprocessing = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(224),
+        transforms.Resize((224, 224)),
         transforms.ToTensor(),
         transforms.Normalize(
             mean=[0.485, 0.456, 0.406],
@@ -39,11 +38,11 @@ def classify_image(img_file, is_img_path=False):
     # 5. pass it to model and get outputs
     with torch.no_grad():
         outputs = model(input_batch)
-    
+
     # 6. the outputs have the logits but we also need the string class label
     # we can attempt get the imagenet classes from the following link
     classes = get_imagenet_classes()
-    
+
     # process output and return label, confidence, probabilities
     probabilities = torch.nn.functional.softmax(outputs[0], dim=0)
     top_i = probabilities.argmax().item()
