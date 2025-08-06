@@ -95,3 +95,53 @@ Try to improve optimiser... maybe change loss function?
     - Also found lpips: https://github.com/richzhang/PerceptualSimilarity
     - Maybe it might be interesting to include that in loss function ?
 
+Update #3
+Completed the overall main task which is to modify an input image to match a desired label.
+
+Things to be improved and my thoughts on how to do it
+1. The similarity of the output image with the input image. Currently, you can see both images look similar but it is clear that output image was modified. It looks blurry or 'grayed out'. If I add more wait to the similarity between image in the loss function this might also improve. I think also including a better loss for similarity will help, for exmaple, using lpips https://github.com/richzhang/PerceptualSimilarity instead of mse loss.
+2. The performance is not perfect, there are some images that the current optimiser cannot modify it to be classified as desired_label. A current idea that I have is to add noise to the features vector at different layers of the network. Currently, I'm modifying the features vector at a single point which is after the encoder has extracted all features and before the model does the classification of it with fully connected layers. What if we extract the features vector after different convolution block layers for both "centroid features vector" and for input image, and optimise the extracted features to look similar to the centroid vector at the corresponding stage, then upsample the and concatenate. Basically, doing a U-Net architectur and doing the optimisation process that I'm already doing at the skip connections. This might help with images that in the current processed cannot be modified to be the desired label.
+    - 2.1. UPDATE the classification to the desired label can be achieve with higher number of steps and a higher epsilon value. These two changes allows the process to modify the vector enough to be able to achieve the desired outcome. However, the similarity of output and input images still not great. 
+3. Other small details such as output image is not the same dimension as input image. Currently there are only two options for desired label "dining table" or "folding chair", what if we want more? Also, error handling if None of these two are selected.
+4. Extensive evaluations. I can think of 3 main metrics.
+    - Attack effectiveness: How many modified input images end up actually being predicted as the desired label?
+    - Perceptual/Similarity Quality: How similar is the output image to the input image? The python package LPIPS might help for this, or SSIM index.
+    - Robustness of the approach: Can we use this same approach with other classifiers without modifying anything? Instead of using VGG16, change it to VGG19 or ResNet or Inception models.
+
+# How to use it?
+1. Clone the repository.
+2. Navigate to the main folder and use the requirements.txt to install dependencies.
+    - ```pip install -r requirements.txt```
+3. The repo includes two folders with images and a features centroid vector for the labels: "dining table" and "folding chair". This can be used for testing the code.
+    - 3.1 In a python notebook or in a python environment you can run the following simple code:
+    ```
+    from generate_adversarial import *
+    from img_classification import *
+    input_path = "dog.jpg" # image included in main folder of repository
+    real_input_label = "dog"
+    desired_label = "dining table"
+    output_filepath = "output_advers_folding_chair.jpg" # only needed when using 'generate_and_save_adversarial' function
+    advers_img = generate_adversarial(input_path, desired_label, steps=100, epsilon=0.05)
+    # uncomment the following line and comment previous line if you want to create an output file, modify output_filepath if needed
+    # advers_img = generate_and_save_adversarial(input_path, desired_label, "output_advers_folding_chair.jpg", steps=200)
+    input_res = classify_image(input_path)
+    advers_res = classify_image(advers_img, True)
+    print("input", "real label:", {real_input_label}, "predicted label for input no adversarial noise:", input_res["label"], "confidence: ", input_res["confidence"])
+    print("advers", "label:", advers_res["label"], "confidence:", advers_res["confidence"])
+    ```
+    - 3.2 This example code is also in "quick_test.py" so you can just run the following after installing dependencies:
+    ```python quick_test.py```
+4. Generate new features centroid for a new label
+    - 4.1 To generate a new centroid for a new possible desired label first make sure to have a similar folder structure to 'dining table' or 'folding chair'
+    <label class>
+    |
+    --> images
+        |
+        --> img_1.jpg
+        --> img_2.jpg
+    - 4.2 Then run the following code in a python notebook or python environment running from the main folder of the repository
+    ```
+    from features_centroid_extraction import *
+    process_label_folder(<replaces this with new label class string>)
+    ```
+5. "Test Adversarial Noise.ipynb" is a python notebook that includes some of the quick tests and examples. You can also use this notebook as a starting point.
