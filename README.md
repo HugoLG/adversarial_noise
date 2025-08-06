@@ -63,6 +63,7 @@ Initial thoughts
 4. Create a full pipeline and deploy it as an API, to be available for anyone that wants to use it.
     4.1 This should be easy, we can use FastAPI library to quickly create a function that receives the input image and label
     4.2 Do all the processing, create the image and return it.
+    UPDATE #4 At the end this was done as a small python library that you can download from github import to your python notebook or python script and use the code generate an adversarial image.
 
 
 Update #1
