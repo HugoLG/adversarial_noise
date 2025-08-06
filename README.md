@@ -132,13 +132,13 @@ Things to be improved and my thoughts on how to do it
     - 3.2 This example code is also in "quick_test.py" so you can just run the following after installing dependencies:
     ```python quick_test.py```
 4. Generate new features centroid for a new label
-    - 4.1 To generate a new centroid for a new possible desired label first make sure to have a similar folder structure to 'dining table' or 'folding chair'
+    - 4.1 To generate a new centroid for a new possible desired label first make sure to have a similar folder structure to 'dining table' or 'folding chair'<br>
     label_class<br>
     |<br>
     --> images<br>
-        |<br>
-        --> img_1.jpg<br>
-        --> img_2.jpg<br>
+        - |<br>
+        - --> img_1.jpg<br>
+        - --> img_2.jpg<br>
     - 4.2 Then run the following code in a python notebook or python environment running from the main folder of the repository
     ```
     from features_centroid_extraction import *
