@@ -1,5 +1,6 @@
 # Machine Learning Problem - Adversarial Noise
-Machine Learning Programming Challenge - Journal
+
+## Machine Learning Programming Challenge - Journal
 
 Assumption #1: We have an Image Classification model, it can be any model (e.g. VGG16). 
 
@@ -98,7 +99,7 @@ Try to improve optimiser... maybe change loss function?
 Update #3
 Completed the overall main task which is to modify an input image to match a desired label.
 
-Things to be improved and my thoughts on how to do it
+## Things to be improved and my thoughts on how to do it
 1. The similarity of the output image with the input image. Currently, you can see both images look similar but it is clear that output image was modified. It looks blurry or 'grayed out'. If I add more wait to the similarity between image in the loss function this might also improve. I think also including a better loss for similarity will help, for exmaple, using lpips https://github.com/richzhang/PerceptualSimilarity instead of mse loss.
 2. The performance is not perfect, there are some images that the current optimiser cannot modify it to be classified as desired_label. A current idea that I have is to add noise to the features vector at different layers of the network. Currently, I'm modifying the features vector at a single point which is after the encoder has extracted all features and before the model does the classification of it with fully connected layers. What if we extract the features vector after different convolution block layers for both "centroid features vector" and for input image, and optimise the extracted features to look similar to the centroid vector at the corresponding stage, then upsample the and concatenate. Basically, doing a U-Net architectur and doing the optimisation process that I'm already doing at the skip connections. This might help with images that in the current processed cannot be modified to be the desired label.
     - 2.1. UPDATE the classification to the desired label can be achieve with higher number of steps and a higher epsilon value. These two changes allows the process to modify the vector enough to be able to achieve the desired outcome. However, the similarity of output and input images still not great. 
@@ -108,7 +109,7 @@ Things to be improved and my thoughts on how to do it
     - Perceptual/Similarity Quality: How similar is the output image to the input image? The python package LPIPS might help for this, or SSIM index.
     - Robustness of the approach: Can we use this same approach with other classifiers without modifying anything? Instead of using VGG16, change it to VGG19 or ResNet or Inception models.
 
-# How to use it?
+## How to use it?
 1. Clone the repository.
 2. Navigate to the main folder and use the requirements.txt to install dependencies.
     - ```pip install -r requirements.txt```
