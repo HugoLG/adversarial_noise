@@ -133,15 +133,15 @@ Things to be improved and my thoughts on how to do it
     ```python quick_test.py```
 4. Generate new features centroid for a new label
     - 4.1 To generate a new centroid for a new possible desired label first make sure to have a similar folder structure to 'dining table' or 'folding chair'
-    <label class>
-    |
-    --> images
-        |
-        --> img_1.jpg
-        --> img_2.jpg
+    label_class<br>
+    |<br>
+    --> images<br>
+        |<br>
+        --> img_1.jpg<br>
+        --> img_2.jpg<br>
     - 4.2 Then run the following code in a python notebook or python environment running from the main folder of the repository
     ```
     from features_centroid_extraction import *
-    process_label_folder(<replaces this with new label class string>)
+    process_label_folder(<<replace this with new label class string>>)
     ```
 5. "Test Adversarial Noise.ipynb" is a python notebook that includes some of the quick tests and examples. You can also use this notebook as a starting point.
